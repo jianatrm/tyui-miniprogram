@@ -1,0 +1,217 @@
+var componentInstance = null
+var instanceState = {}
+function isRange(val) {
+    if (!val) return  false
+    return instanceState.range && val.constructor == 'Array'
+}
+
+function clamp (num, min, max) {
+    return Math.min(Math.max(num, min), max)
+}
+
+function limit(num) {
+    if (num <= 0) {
+        return 0
+    }
+    if (num >= 100) {
+        return 100
+    }
+    return num
+}
+function addNumber(num1, num2) {
+    var cardinal = Math.pow(10,10)
+    return Math.round((num1 + num2) * cardinal) / cardinal
+}
+
+function format(value) {
+    var min = +instanceState.min
+    var max = +instanceState.max
+    var step = +instanceState.step
+    value = clamp(value, min, max)
+    var diff = Math.round((value - min) / step) * step
+    return addNumber(min, diff)
+}
+function getDirection(x, y) {
+    if (x > y) {
+        return 'horizontal'
+    }
+    if (y > x) {
+        return 'vertical'
+    }
+    return ''
+}
+
+function calcMainAxis() {
+    var modelValue = instanceState._current, min = instanceState.min;
+    if (isRange(modelValue)) {
+        return limit(((modelValue[1] - modelValue[0]) * 100) / instanceState.scope) + '%'
+    }
+    return ((modelValue - min) * 100) / instanceState.scope + '%'
+}
+// 计算选中条的开始位置的偏移量
+function calcOffset() {
+    var modelValue = instanceState._current, min = instanceState.min;
+    if (isRange(modelValue)) {
+        return (limit((modelValue[0] - min)) * 100) / instanceState.scope + '%'
+    }
+    return '0%'
+}
+
+
+function isSameValue(newValue, oldValue) {
+    return JSON.stringify(newValue) === JSON.stringify(oldValue)
+}
+function handleRangeValue(value) {
+    // 设置默认值
+    var left = value[0] || instanceState.min
+    var right = value[1] || instanceState.max
+    // 处理两个滑块重叠之后的情况
+    return left > right ? [right, left] : [left, right]
+}
+
+
+function barStyle() {
+    var mainAxis = instanceState.vertical ? 'height' : 'width'
+    var style = {
+
+        // background: props.activeColor,
+    }
+    style[mainAxis] =  calcMainAxis()
+
+    if (instanceState._dragStatus) {
+        style.transition = 'none'
+    }
+
+    function getPositionKey () {
+        if (instanceState.vertical) {
+            return instanceState.reverse ? 'bottom' : 'top'
+        }
+        return instanceState.reverse ? 'right' : 'left'
+    }
+
+    style[getPositionKey()] = calcOffset()
+    componentInstance.selectComponent('.ty-slider__bar').setStyle(style)
+    return style
+}
+function updateValue(value, end) {
+    if (isRange(value)) {
+        value = handleRangeValue(value).map(function (item){
+          return  format(item)
+        })
+    } else {
+        value = format(value)
+    }
+    instanceState._current= value
+    if (!isSameValue(value, instanceState.modelValue)) {
+        // emit('update:modelValue', value)
+    }
+    if (end && !isSameValue(value, instanceState._startValue)) {
+        // emit('change', value)
+    }
+    barStyle()
+    instanceState._current = value
+    return value
+}
+module.exports = {
+
+    onClick:function(event) {
+        var min = instanceState.min
+        var reverse = instanceState.reverse
+        var vertical = instanceState.vertical
+        var modelValue = instanceState.modelValue
+        var rect = instanceState.rect
+
+        function getDelta () {
+            if (vertical) {
+                if (reverse) {
+                    return rect.bottom - event.clientY
+                }
+                return event.clientY - rect.top
+            }
+            if (reverse) {
+                return rect.right - event.clientX
+            }
+            return event.clientX - rect.left
+        }
+
+        var total = vertical ? rect.height : rect.width
+        var value = min + (getDelta() / total) * instanceState.scope
+
+        if (isRange(modelValue)) {
+            var left = modelValue[0]
+            var right = modelValue[1]
+            var middle = (left + right) / 2
+
+            if (value <= middle) {
+                updateValue([value, right], true)
+            } else {
+                updateValue([left, value], true)
+            }
+        } else {
+            updateValue(value, true)
+        }
+    },
+
+    onTouchStart:function(e,ins) {
+        instanceState.buttonIndex = e.currentTarget.dataset.tabindex
+        instanceState._startX = e.touches[0].clientX
+        instanceState._startY = e.touches[0].clientY
+        if (isRange(instanceState._current)) {
+            instanceState._startValue = instanceState._current.map(function (item){
+               return  format(item)
+            })
+        } else {
+            instanceState._startValue = format(instanceState._current)
+        }
+        instanceState._dragStatus = 'start'
+    },
+    onTouchmove:function(e) {
+        instanceState._dragStatus = 'dragging'
+        var touch = e.touches[0]
+        var deltaX = (touch.clientX < 0 ? 0 : touch.clientX) - instanceState._startX
+        var deltaY = touch.clientY - instanceState._startY
+        var offsetX = Math.abs(deltaX)
+        var offsetY = Math.abs(deltaY)
+        var LOCK_DIRECTION_DISTANCE = 10
+        if (!instanceState.direction || (offsetX < LOCK_DIRECTION_DISTANCE &&
+            offsetY < LOCK_DIRECTION_DISTANCE)) {
+            instanceState.direction = getDirection(offsetX, offsetY)
+        }
+        var delta = instanceState.vertical ? deltaY : deltaX
+        var total = instanceState.vertical ? instanceState.rect.height : instanceState.rect.width
+
+        var diff = (delta / total) * instanceState.scope
+        if (instanceState.reverse) {
+            diff = -diff
+        }
+        if (isRange(instanceState._startValue)) {
+            var index = instanceState.reverse ? 1 - instanceState.buttonIndex : instanceState.buttonIndex
+            instanceState._current[index] = limit(instanceState._startValue[index] + diff)
+        } else {
+            instanceState._current = limit(instanceState._startValue + diff)
+        }
+        updateValue(instanceState._current)
+    },
+    onTouchend:function() {
+        if (instanceState._dragStatus === 'dragging') {
+            updateValue(instanceState._current, true)
+        }
+        instanceState._dragStatus = ''
+    },
+    onTouchcancel:function() {
+
+    },
+    propObserver: function(newValue, oldValue, ownerInstance, instance) {
+        if (!newValue) return
+        componentInstance = ownerInstance
+        instanceState = ownerInstance.getState()
+        instanceState.min = newValue.min
+        instanceState.max = newValue.max
+        instanceState.rect = newValue.rect
+        instanceState.step = newValue.step
+        instanceState.range = newValue.range
+        instanceState.scope = newValue.scope
+        instanceState._current = newValue.modelValue
+        updateValue(instanceState._current)
+    }
+}

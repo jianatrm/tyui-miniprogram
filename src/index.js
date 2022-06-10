@@ -20,30 +20,43 @@ Component({
       type: Boolean,
       value: true
     },
+    vertical: {
+      type: Boolean,
+      value: false
+    },
+    reverse: {
+      type: Boolean,
+      value: false
+    },
     direction: {
       type: String,
       value: 'horizontal'
     }
   },
   data: {
-    flag: false,
-    scope: 100,
-    rect: {},
-    vertical: false,
-    reverse: false,
-    buttonIndex: 0,
-    _style: {}
+    initData: {}
   },
   lifetimes: {
     attached() {
       const query = wx.createSelectorQuery().in(this)
       query.select('.ty-slider').boundingClientRect((res) => {
+        console.log('res', res)
         this.setData({
-          rect: res
+          initData: {
+            min: this.properties.min,
+            max: this.properties.max,
+            modelValue: this.properties.modelValue,
+            step: this.properties.step,
+            range: this.properties.range,
+            direction: this.properties.direction,
+            scope: this.properties.max - this.properties.min,
+            rect: res,
+            vertical: this.properties.vertical,
+            reverse: this.properties.reverse,
+            buttonIndex: 0,
+          }
         })
       }).exec()
-      // const scope = computed(() => Number(props.max) - Number(props.min))
-      this.barStyle()
     }
   },
   methods: {

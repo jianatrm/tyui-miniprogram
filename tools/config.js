@@ -92,5 +92,5 @@ module.exports = {
     }
   },
 
-  copy: ['./assets', './utils.js'], // 将会复制到目标目录
+  copy: ['../src/touch.wxs'], // 将会复制到目标目录
 }
