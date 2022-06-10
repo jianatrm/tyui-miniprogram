@@ -1,13 +1,15 @@
+<wxs module="touch" src="./index.wxs"></wxs>
 <view style="margin-top:80rpx;padding:40rpx">
     <view class="ty-slider">
         <view class="ty-slider__bar" style="width: 100%; left: 0%;">
             <view role="slider" class="ty-slider__button-wrapper ty-slider__button-wrapper--left" tabindex="0"
                   aria-valuemin="0" aria-valuenow="16" aria-valuemax="100" aria-orientation="horizontal"
-                  catch:touchstart="onTouchStart">
+                  catch:touchstart="{{touch.onTouchStart}}" catch:touchmove="{{touch.onTouchmove}}" catch:touchend="{{touch.onTouchend()}}">
                 <view class="ty-slider__button"></view>
             </view>
             <view role="slider" class="ty-slider__button-wrapper ty-slider__button-wrapper--right" tabindex="0"
-                  aria-valuemin="0" aria-valuenow="73" aria-valuemax="100" aria-orientation="horizontal">
+                  aria-valuemin="0" aria-valuenow="73" aria-valuemax="100" aria-orientation="horizontal"
+                  catch:touchstart="{{touch.onTouchStart}}" catch:touchmove="{{touch.onTouchmove}}" catch:touchend="{{touch.onTouchend()}}">
                 <view class="ty-slider__button"></view>
             </view>
         </view>
