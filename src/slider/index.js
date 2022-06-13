@@ -60,7 +60,6 @@ Component({
             activeColor: this.properties.activeColor,
           }
         }, () => {
-          console.log('initData', this.data.initData)
           this.setData({
             show: true
           })
@@ -70,7 +69,6 @@ Component({
   },
   methods: {
     callback(e) {
-      console.log('callback', e)
       const initData = this.data.initData
       initData.value = e.value
       this.setData({

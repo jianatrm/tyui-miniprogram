@@ -1,5 +1,5 @@
 <wxs module="touch" src="../touch.wxs"></wxs>
-<view  class="ty-slider {{vertical ? 'ty-slider--vertical' : ''}}" style="background-color:{{inactiveColor}};opacity: {{show?1:0}};" prop="{{value}}" bind:tap="{{touch.onClick}}">
+<view  class="ty-slider {{vertical ? 'ty-slider--vertical' : ''}}" style="background-color:{{inactiveColor}};" prop="{{initData}}"   data-init-data="{{initData}}" bind:tap="{{touch.onClick}}">
     <view class="ty-slider__bar" style="width: 100%; left: 0%;" change:prop="{{touch.propObserver}}"
           prop="{{initData}}">
         <view role="slider" class="ty-slider__button-wrapper ty-slider__button-wrapper--left" data-tabindex="{{0}}"
@@ -8,7 +8,6 @@
               bind:touchend="{{touch.onTouchend}}"
               catch:touchcancel="{{touch.onTouchend}}" wx:if="{{range || reverse}}">
             <view class="ty-slider__button">
-                <slot name="left"></slot>
             </view>
         </view>
         <view role="slider" class="ty-slider__button-wrapper ty-slider__button-wrapper--right" data-tabindex="{{1}}"
@@ -17,7 +16,6 @@
               bind:touchend="{{touch.onTouchend}}"
               catch:touchcancel="{{touch.onTouchend}}" wx:if="{{range}}">
             <view class="ty-slider__button">
-                <slot  name="right"></slot>
             </view>
         </view>
     </view>
