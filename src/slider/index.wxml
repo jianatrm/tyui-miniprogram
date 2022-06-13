@@ -13,7 +13,7 @@
               data-init-data="{{initData}}"
               catch:touchstart="{{touch.onTouchStart}}" catch:touchmove="{{touch.onTouchmove}}"
               bind:touchend="{{touch.onTouchend}}"
-              catch:touchcancel="{{touch.onTouchend}}" wx:if="{{!range && !reverse}}">
+              catch:touchcancel="{{touch.onTouchend}}" wx:if="{{range}}">
             <view class="ty-slider__button"></view>
         </view>
     </view>
