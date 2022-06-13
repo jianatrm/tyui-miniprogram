@@ -76,6 +76,7 @@ Component({
       this.setData({
         initData
       })
+      this.triggerEvent('change', e.value)
     }
   }
 })
