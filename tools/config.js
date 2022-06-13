@@ -12,7 +12,7 @@ const dev = path.join(demoDist, 'components')
 const dist = path.resolve(__dirname, '../miniprogram_dist')
 
 module.exports = {
-  entry: ['slider/index', 'lib'],
+  entry: ['slider/index'],
 
   isDev,
   isWatch,
@@ -92,5 +92,5 @@ module.exports = {
     }
   },
 
-  copy: ['../src/touch.wxs',], // 将会复制到目标目录
+  copy: ['../src/slider/touch.wxs'], // 将会复制到目标目录
 }

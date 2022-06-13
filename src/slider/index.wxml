@@ -1,4 +1,4 @@
-<wxs module="touch" src="../touch.wxs"></wxs>
+<wxs module="touch" src="touch.wxs"></wxs>
 <view  class="ty-slider {{vertical ? 'ty-slider--vertical' : ''}}" style="background-color:{{inactiveColor}};" prop="{{initData}}"   data-init-data="{{initData}}" bind:tap="{{touch.onClick}}">
     <view class="ty-slider__bar" style="width: 100%; left: 0%;" change:prop="{{touch.propObserver}}"
           prop="{{initData}}">
