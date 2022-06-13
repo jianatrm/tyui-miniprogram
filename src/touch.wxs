@@ -161,6 +161,7 @@ module.exports = {
         instanceState._dragStatus = 'start'
     },
     onTouchmove:function(e) {
+        console.log('onTouchmove',instanceState._dragStatus)
         instanceState._dragStatus = 'dragging'
         var touch = e.touches[0]
         var deltaX = (touch.clientX < 0 ? 0 : touch.clientX) - instanceState._startX
@@ -187,19 +188,12 @@ module.exports = {
         }
         updateValue(instanceState._current)
     },
-    onTouchend:function() {
-        console.log('onTouchend',instanceState._dragStatus)
+    onTouchend:function(e) {
         if (instanceState._dragStatus === 'dragging') {
-            console.log('onTouchend',instanceState._current)
-            if (isRange(instanceState._updateValue)) {
-                instanceState._current = handleRangeValue(instanceState._updateValue).map(function (item){
-                    return  format(item)
-                })
-            } else {
-                instanceState._current = format(instanceState._updateValue)
-            }
+            instanceState._current = instanceState._updateValue
         }
-        // console.log('onTouchend',instanceState._current)
+
+        console.log('onTouchend',instanceState._current)
         instanceState._dragStatus = ''
     },
     onTouchcancel:function() {
