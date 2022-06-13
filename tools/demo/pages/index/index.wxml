@@ -1,4 +1,5 @@
-<view style="margin-top:80rpx">
-    <comp></comp>
+<view >
+    <slider range="{{false}}"  min="{{20}}" max="{{80}}" value="{{50}}" step="{{1}}" vertical="{{false}}"></slider>
+    <slider range="{{true}}"  min="{{0}}" max="{{100}}" value="{{[20,30]}}" step="{{1}}" vertical="{{false}}"></slider>
 </view>
 

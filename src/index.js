@@ -9,8 +9,9 @@ Component({
       value: 100
     },
     value: {
-      type: Array,
-      value: [50, 70]
+      // eslint-disable-next-line no-bitwise
+      type: Array | Number,
+      value: 70
     },
     step: {
       type: Number,
@@ -18,7 +19,7 @@ Component({
     },
     range: {
       type: Boolean,
-      value: true
+      value: false
     },
     vertical: {
       type: Boolean,
@@ -36,6 +37,8 @@ Component({
     attached() {
       const query = wx.createSelectorQuery().in(this)
       query.select('.ty-slider').boundingClientRect((res) => {
+        // eslint-disable-next-line no-debugger
+        console.log('this', this)
         this.setData({
           initData: {
             min: this.properties.min,

@@ -75,6 +75,7 @@ function barStyle() {
     var style = {
         // background: props.activeColor,
     }
+    console.log('calcMainAxis()',calcMainAxis())
     style[mainAxis] =  calcMainAxis()
     if (instanceState._dragStatus) {
         style.transition = 'none'
@@ -200,9 +201,10 @@ module.exports = {
         console.log('onTouchcancel',instanceState._dragStatus)
     },
     propObserver: function(newValue, oldValue, ownerInstance, instance) {
+        console.log('prop observer', newValue, oldValue,ownerInstance, instance)
         if (!newValue) return
         componentInstance = ownerInstance
-        instanceState = ownerInstance.getState()
+        instanceState = instance.getState()
         instanceState.min = newValue.min
         instanceState.max = newValue.max
         instanceState._current = newValue.value
