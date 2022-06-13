@@ -1,9 +1,9 @@
 <view style="padding:40rpx;box-size:border-box;">
     <view style="height:500rpx">
-        <ty-slider range="{{false}}"  min="{{0}}" max="{{100}}" value="{{50}}" step="{{1}}" vertical="{{true}}" reverse activeColor="red" inactiveColor="green"></ty-slider>
+        <ty-slider range="{{false}}"  min="{{0}}" max="{{100}}" value="{{50}}" step="{{1}}" vertical="{{true}}" reverse activeColor="red" inactiveColor="green">2</ty-slider>
     </view>
    <view style="height:690rpx;margin-top:100rpx">
-       <ty-slider range="{{true}}"  min="{{0}}" max="{{100}}" value="{{[20,30]}}" step="{{1}}" ></ty-slider>
+       <ty-slider range="{{true}}"  min="{{0}}" max="{{100}}" value="{{[20,30]}}" step="{{1}}" >1</ty-slider>
    </view>
     <slider min="0" max="100" value="40" activeColor="red" backgroundColor="green"></slider>
 </view>
