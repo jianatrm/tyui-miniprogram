@@ -28,6 +28,14 @@ Component({
     reverse: {
       type: Boolean,
       value: false
+    },
+    activeColor: {
+      type: String,
+      value: '#1989fa'
+    },
+    inactiveColor: {
+      type: String,
+      value: '#ebedf0'
     }
   },
   data: {
@@ -48,9 +56,14 @@ Component({
             rect: res,
             vertical: this.properties.vertical,
             reverse: this.properties.reverse,
+            inactiveColor: this.properties.inactiveColor,
+            activeColor: this.properties.activeColor,
           }
         }, () => {
           console.log('initData', this.data.initData)
+          this.setData({
+            show: true
+          })
         })
       }).exec()
     }

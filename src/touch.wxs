@@ -67,7 +67,7 @@ function handleRangeValue(value) {
 function barStyle() {
     var mainAxis = instanceState.vertical ? 'height' : 'width'
     var style = {
-        // background: props.activeColor,
+        background: instanceState.activeColor,
     }
     console.log('calcMainAxis()',calcMainAxis())
     style[mainAxis] =  calcMainAxis()
@@ -145,15 +145,18 @@ module.exports = {
 
     onTouchStart:function(e,ins) {
         componentInstance = ins
-        instanceState.min = e.currentTarget.dataset.initData.min
-        instanceState.max = e.currentTarget.dataset.initData.max
-        instanceState._current = e.currentTarget.dataset.initData.value
-        instanceState.step = e.currentTarget.dataset.initData.step
-        instanceState.range = e.currentTarget.dataset.initData.range
-        instanceState.scope = e.currentTarget.dataset.initData.scope
-        instanceState.rect = e.currentTarget.dataset.initData.rect
-        instanceState.vertical = e.currentTarget.dataset.initData.vertical
-        instanceState.reverse = e.currentTarget.dataset.initData.reverse
+        var initData = e.currentTarget.dataset.initData
+        instanceState.min = initData.min
+        instanceState.max = initData.max
+        instanceState._current = initData.value
+        instanceState.step = initData.step
+        instanceState.range = initData.range
+        instanceState.scope = initData.scope
+        instanceState.rect = initData.rect
+        instanceState.vertical = initData.vertical
+        instanceState.reverse = initData.reverse
+        instanceState.activeColor = initData.activeColor
+        instanceState.inactiveColor = initData.inactiveColor
         instanceState.buttonIndex = e.currentTarget.dataset.tabindex
         instanceState._startX = e.touches[0].clientX
         instanceState._startY = e.touches[0].clientY
@@ -216,6 +219,8 @@ module.exports = {
         instanceState.direction = ''
         instanceState.reverse = newValue.reverse
         instanceState.vertical = newValue.vertical
+        instanceState.activeColor = newValue.activeColor
+        instanceState.inactiveColor = newValue.inactiveColor
         updateValue(instanceState._current)
     }
 }

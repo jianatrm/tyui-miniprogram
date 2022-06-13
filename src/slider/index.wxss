@@ -5,6 +5,7 @@
   background: #ebedf0;
   border-radius: 1998rpx;
   cursor: pointer;
+
 }
 .ty-slider__bar {
   position: absolute;
