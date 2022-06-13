@@ -1,16 +1,19 @@
 <wxs module="touch" src="../touch.wxs"></wxs>
 <view style="margin-top:100rpx;padding:40rpx;margin-bottom:400rpx">
-    <view class="ty-slider" prop="{{modelValue}}" bind:tap="{{touch.onClick}}"  >
-        <view class="ty-slider__bar" style="width: 100%; left: 0%;" change:prop="{{touch.propObserver}}"  prop="{{initData}}"  >
-            <view role="slider" class="ty-slider__button-wrapper ty-slider__button-wrapper--left" data-tabindex="{{0}}" data-rect="{{rect}}"
-                  data-aria-valuemin="{{min}}" data-aria-value="{{modelValue}}" data-aria-valuemax="{{max}}" aria-orientation="horizontal"
-                  catch:touchstart="{{touch.onTouchStart}}" catch:touchmove="{{touch.onTouchmove}}" bind:touchend="{{touch.onTouchend}}"
+    <view class="ty-slider" prop="{{modelValue}}" bind:tap="{{touch.onClick}}">
+        <view class="ty-slider__bar" style="width: 100%; left: 0%;" change:prop="{{touch.propObserver}}"
+              prop="{{initData}}">
+            <view role="slider" class="ty-slider__button-wrapper ty-slider__button-wrapper--left" data-tabindex="{{0}}"
+                  data-init-data="{{initData}}"
+                  catch:touchstart="{{touch.onTouchStart}}" catch:touchmove="{{touch.onTouchmove}}"
+                  bind:touchend="{{touch.onTouchend}}"
                   catch:touchcancel="{{touch.onTouchend}}" wx:if="{{range}}">
                 <view class="ty-slider__button"></view>
             </view>
-            <view role="slider" class="ty-slider__button-wrapper ty-slider__button-wrapper--right" data-tabindex="{{1}}" data-rect="{{rect}}"
-                  data-aria-valuemin="{{min}}" data-aria-value="{{modelValue}}" data-aria-valuemax="{{max}}" aria-orientation="horizontal"
-                  catch:touchstart="{{touch.onTouchStart}}" catch:touchmove="{{touch.onTouchmove}}" bind:touchend="{{touch.onTouchend}}"
+            <view role="slider" class="ty-slider__button-wrapper ty-slider__button-wrapper--right" data-tabindex="{{1}}"
+                  data-init-data="{{initData}}"
+                  catch:touchstart="{{touch.onTouchStart}}" catch:touchmove="{{touch.onTouchmove}}"
+                  bind:touchend="{{touch.onTouchend}}"
                   catch:touchcancel="{{touch.onTouchend}}">
                 <view class="ty-slider__button"></view>
             </view>

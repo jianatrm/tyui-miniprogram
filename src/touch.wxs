@@ -10,12 +10,6 @@ function clamp (num, min, max) {
 }
 
 function limit(num) {
-    // if (num <= 0) {
-    //     return 0
-    // }
-    // if (num >= 100) {
-    //     return 100
-    // }
     return num
 }
 function addNumber(num1, num2) {
@@ -88,6 +82,7 @@ function barStyle() {
         return instanceState.reverse ? 'right' : 'left'
     }
     style[getPositionKey()] = calcOffset()
+    //
     componentInstance.selectComponent('.ty-slider__bar').setStyle(style)
     return style
 }
@@ -149,6 +144,14 @@ module.exports = {
     },
 
     onTouchStart:function(e,ins) {
+        componentInstance = ins
+        instanceState.min = e.currentTarget.dataset.initData.min
+        instanceState.max = e.currentTarget.dataset.initData.max
+        instanceState._current = e.currentTarget.dataset.initData.value
+        instanceState.step = e.currentTarget.dataset.initData.step
+        instanceState.range = e.currentTarget.dataset.initData.range
+        instanceState.scope = e.currentTarget.dataset.initData.scope
+        instanceState.rect = e.currentTarget.dataset.initData.rect
         instanceState.buttonIndex = e.currentTarget.dataset.tabindex
         instanceState._startX = e.touches[0].clientX
         instanceState._startY = e.touches[0].clientY
@@ -162,7 +165,6 @@ module.exports = {
         instanceState._dragStatus = 'start'
     },
     onTouchmove:function(e) {
-        console.log('onTouchmove',instanceState._dragStatus)
         instanceState._dragStatus = 'dragging'
         var touch = e.touches[0]
         var deltaX = (touch.clientX < 0 ? 0 : touch.clientX) - instanceState._startX
@@ -189,22 +191,16 @@ module.exports = {
         }
         updateValue(instanceState._current)
     },
-    onTouchend:function(e) {
+    onTouchend:function() {
         if (instanceState._dragStatus === 'dragging') {
             instanceState._current = instanceState._updateValue
+            componentInstance.callMethod('callback',instanceState._updateValue)
         }
-
-        console.log('onTouchend',instanceState._current)
         instanceState._dragStatus = ''
     },
-    onTouchcancel:function() {
-        console.log('onTouchcancel',instanceState._dragStatus)
-    },
     propObserver: function(newValue, oldValue, ownerInstance, instance) {
-        console.log('prop observer', newValue, oldValue,ownerInstance, instance)
         if (!newValue) return
         componentInstance = ownerInstance
-        instanceState = instance.getState()
         instanceState.min = newValue.min
         instanceState.max = newValue.max
         instanceState._current = newValue.value
@@ -213,7 +209,7 @@ module.exports = {
         instanceState.scope = newValue.scope
         instanceState.rect = newValue.rect
         instanceState.direction = ''
-        instanceState.reverse = newValue.reverse
+        // instanceState.reverse = newValue.reverse
         updateValue(instanceState._current)
     }
 }

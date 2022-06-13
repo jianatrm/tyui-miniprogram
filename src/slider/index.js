@@ -37,8 +37,6 @@ Component({
     attached() {
       const query = wx.createSelectorQuery().in(this)
       query.select('.ty-slider').boundingClientRect((res) => {
-        // eslint-disable-next-line no-debugger
-        console.log('this', this)
         this.setData({
           initData: {
             min: this.properties.min,
@@ -56,6 +54,12 @@ Component({
     }
   },
   methods: {
-
+    callback(e) {
+      const initData = this.data.initData
+      initData.value = e
+      this.setData({
+        initData
+      })
+    }
   }
 })
