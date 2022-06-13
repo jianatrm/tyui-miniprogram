@@ -113,6 +113,7 @@ function updateValue(value, end) {
         // emit('change', value)
     }
     instanceState._updateValue = value
+    instanceState._current = value
     barStyle()
     return value
 }
@@ -121,26 +122,28 @@ module.exports = {
         var min = instanceState.min
         var reverse = instanceState.reverse
         var vertical = instanceState.vertical
-        var modelValue = instanceState.modelValue
+        var modelValue = instanceState._current
         var rect = instanceState.rect
-        console.log('onClick')
+        var touch = event.touches[0]
         function getDelta () {
             if (vertical) {
                 if (reverse) {
-                    return rect.bottom - event.clientY
+                    return rect.bottom - touch.clientY
                 }
-                return event.clientY - rect.top
+                return touch.clientY - rect.top
             }
             if (reverse) {
-                return rect.right - event.clientX
+                return rect.right - touch.clientX
             }
-            return event.clientX - rect.left
+            return touch.clientX - rect.left
         }
 
         var total = vertical ? rect.height : rect.width
-        var value = min + (getDelta() / total) * instanceState.scope
 
+        var value = min + (getDelta() / total) * instanceState.scope
+        console.log('onClickvalue',modelValue)
         if (isRange(modelValue)) {
+            console.log('onClickvalue',modelValue)
             var left = modelValue[0]
             var right = modelValue[1]
             var middle = (left + right) / 2
