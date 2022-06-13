@@ -6,14 +6,14 @@
               data-init-data="{{initData}}"
               catch:touchstart="{{touch.onTouchStart}}" catch:touchmove="{{touch.onTouchmove}}"
               bind:touchend="{{touch.onTouchend}}"
-              catch:touchcancel="{{touch.onTouchend}}" wx:if="{{range}}">
+              catch:touchcancel="{{touch.onTouchend}}" wx:if="{{range || reverse}}">
             <view class="ty-slider__button"></view>
         </view>
         <view role="slider" class="ty-slider__button-wrapper ty-slider__button-wrapper--right" data-tabindex="{{1}}"
               data-init-data="{{initData}}"
               catch:touchstart="{{touch.onTouchStart}}" catch:touchmove="{{touch.onTouchmove}}"
               bind:touchend="{{touch.onTouchend}}"
-              catch:touchcancel="{{touch.onTouchend}}">
+              catch:touchcancel="{{touch.onTouchend}}" wx:if="{{!range && !reverse}}">
             <view class="ty-slider__button"></view>
         </view>
     </view>

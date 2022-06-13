@@ -33,6 +33,12 @@
   bottom: 0;
   transform: translate3d(50%, 50%, 0);
 }
+.ty-slider--vertical .ty-slider__button-wrapper--left {
+  top: 0;
+  right: 50%;
+  left: auto;
+  transform: translate3d(50%, -50%, 0);
+}
 .ty-slider__button {
   width: 48rpx;
   height: 48rpx;
