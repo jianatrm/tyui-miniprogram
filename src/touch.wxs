@@ -10,12 +10,12 @@ function clamp (num, min, max) {
 }
 
 function limit(num) {
-    if (num <= 0) {
-        return 0
-    }
-    if (num >= 100) {
-        return 100
-    }
+    // if (num <= 0) {
+    //     return 0
+    // }
+    // if (num >= 100) {
+    //     return 100
+    // }
     return num
 }
 function addNumber(num1, num2) {
@@ -28,6 +28,7 @@ function format(value) {
     var max = +instanceState.max
     var step = +instanceState.step
     value = clamp(value, min, max)
+    console.log('format',value)
     var diff = Math.round((value - min) / step) * step
     return addNumber(min, diff)
 }
@@ -42,7 +43,7 @@ function getDirection(x, y) {
 }
 
 function calcMainAxis() {
-    var modelValue = instanceState._current, min = instanceState.min;
+    var modelValue = instanceState._updateValue, min = instanceState.min;
     if (isRange(modelValue)) {
         return limit(((modelValue[1] - modelValue[0]) * 100) / instanceState.scope) + '%'
     }
@@ -50,7 +51,8 @@ function calcMainAxis() {
 }
 // 计算选中条的开始位置的偏移量
 function calcOffset() {
-    var modelValue = instanceState._current, min = instanceState.min;
+    var modelValue = instanceState._updateValue, min = instanceState.min;
+    console.log('calcOffset',modelValue,min)
     if (isRange(modelValue)) {
         return (limit((modelValue[0] - min)) * 100) / instanceState.scope + '%'
     }
@@ -65,6 +67,8 @@ function handleRangeValue(value) {
     // 设置默认值
     var left = value[0] || instanceState.min
     var right = value[1] || instanceState.max
+    console.log('handleRangeValue',left,right)
+
     // 处理两个滑块重叠之后的情况
     return left > right ? [right, left] : [left, right]
 }
@@ -77,7 +81,6 @@ function barStyle() {
         // background: props.activeColor,
     }
     style[mainAxis] =  calcMainAxis()
-
     if (instanceState._dragStatus) {
         style.transition = 'none'
     }
@@ -88,12 +91,13 @@ function barStyle() {
         }
         return instanceState.reverse ? 'right' : 'left'
     }
-
     style[getPositionKey()] = calcOffset()
+    console.log('style',JSON.stringify(style))
     componentInstance.selectComponent('.ty-slider__bar').setStyle(style)
     return style
 }
 function updateValue(value, end) {
+    console.log('updateValue',value)
     if (isRange(value)) {
         value = handleRangeValue(value).map(function (item){
           return  format(item)
@@ -101,26 +105,25 @@ function updateValue(value, end) {
     } else {
         value = format(value)
     }
-    instanceState._current= value
+    console.log('update:modelValue',value)
     if (!isSameValue(value, instanceState.modelValue)) {
         // emit('update:modelValue', value)
     }
     if (end && !isSameValue(value, instanceState._startValue)) {
         // emit('change', value)
     }
+    instanceState._updateValue = value
     barStyle()
-    instanceState._current = value
     return value
 }
 module.exports = {
-
     onClick:function(event) {
         var min = instanceState.min
         var reverse = instanceState.reverse
         var vertical = instanceState.vertical
         var modelValue = instanceState.modelValue
         var rect = instanceState.rect
-
+        console.log('onClick')
         function getDelta () {
             if (vertical) {
                 if (reverse) {
@@ -186,10 +189,12 @@ module.exports = {
         }
         if (isRange(instanceState._startValue)) {
             var index = instanceState.reverse ? 1 - instanceState.buttonIndex : instanceState.buttonIndex
+            console.log('onTouchmove_currentindex',index)
             instanceState._current[index] = limit(instanceState._startValue[index] + diff)
         } else {
             instanceState._current = limit(instanceState._startValue + diff)
         }
+        console.log('onTouchmove_current',instanceState._current)
         updateValue(instanceState._current)
     },
     onTouchend:function() {
