@@ -4,13 +4,15 @@
         <view class="ty-slider__bar" style="width: 100%; left: 0%;" change:prop="{{touch.propObserver}}"  prop="{{initData}}"  >
             <view role="slider" class="ty-slider__button-wrapper ty-slider__button-wrapper--left" data-tabindex="{{0}}" data-rect="{{rect}}"
                   data-aria-valuemin="{{min}}" data-aria-value="{{modelValue}}" data-aria-valuemax="{{max}}" aria-orientation="horizontal"
-                  catch:touchstart="{{touch.onTouchStart}}" catch:touchmove="{{touch.onTouchmove}}" catch:touchend="{{touch.onTouchend()}}" >
-                <view class="ty-slider__button"></view>
+                  catch:touchstart="{{touch.onTouchStart}}" catch:touchmove="{{touch.onTouchmove}}" catch:touchend="{{touch.onTouchend()}}"
+                  catch:touchcancel="{{touch.onTouchend()}}" >
+                <view class="ty-slider__button">0</view>
             </view>
             <view role="slider" class="ty-slider__button-wrapper ty-slider__button-wrapper--right" data-tabindex="{{1}}" data-rect="{{rect}}"
                   data-aria-valuemin="{{min}}" data-aria-value="{{modelValue}}" data-aria-valuemax="{{max}}" aria-orientation="horizontal"
-                  catch:touchstart="{{touch.onTouchStart}}" catch:touchmove="{{touch.onTouchmove}}" catch:touchend="{{touch.onTouchend()}}">
-                <view class="ty-slider__button"></view>
+                  catch:touchstart="{{touch.onTouchStart}}" catch:touchmove="{{touch.onTouchmove}}" catch:touchend="{{touch.onTouchend()}}"
+                  catch:touchcancel="{{touch.onTouchend()}}">
+                <view class="ty-slider__button">1</view>
             </view>
         </view>
     </view>

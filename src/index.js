@@ -8,7 +8,7 @@ Component({
       type: Number,
       value: 100
     },
-    modelValue: {
+    value: {
       type: Array,
       value: [50, 70]
     },
@@ -27,10 +27,6 @@ Component({
     reverse: {
       type: Boolean,
       value: false
-    },
-    direction: {
-      type: String,
-      value: 'horizontal'
     }
   },
   data: {
@@ -40,20 +36,17 @@ Component({
     attached() {
       const query = wx.createSelectorQuery().in(this)
       query.select('.ty-slider').boundingClientRect((res) => {
-        console.log('res', res)
         this.setData({
           initData: {
             min: this.properties.min,
             max: this.properties.max,
-            modelValue: this.properties.modelValue,
+            value: this.properties.value,
             step: this.properties.step,
             range: this.properties.range,
-            direction: this.properties.direction,
             scope: this.properties.max - this.properties.min,
             rect: res,
             vertical: this.properties.vertical,
             reverse: this.properties.reverse,
-            buttonIndex: 0,
           }
         })
       }).exec()

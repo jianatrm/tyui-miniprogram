@@ -28,7 +28,6 @@ function format(value) {
     var max = +instanceState.max
     var step = +instanceState.step
     value = clamp(value, min, max)
-    console.log('format',value)
     var diff = Math.round((value - min) / step) * step
     return addNumber(min, diff)
 }
@@ -52,7 +51,6 @@ function calcMainAxis() {
 // 计算选中条的开始位置的偏移量
 function calcOffset() {
     var modelValue = instanceState._updateValue, min = instanceState.min;
-    console.log('calcOffset',modelValue,min)
     if (isRange(modelValue)) {
         return (limit((modelValue[0] - min)) * 100) / instanceState.scope + '%'
     }
@@ -67,8 +65,6 @@ function handleRangeValue(value) {
     // 设置默认值
     var left = value[0] || instanceState.min
     var right = value[1] || instanceState.max
-    console.log('handleRangeValue',left,right)
-
     // 处理两个滑块重叠之后的情况
     return left > right ? [right, left] : [left, right]
 }
@@ -77,7 +73,6 @@ function handleRangeValue(value) {
 function barStyle() {
     var mainAxis = instanceState.vertical ? 'height' : 'width'
     var style = {
-
         // background: props.activeColor,
     }
     style[mainAxis] =  calcMainAxis()
@@ -92,12 +87,10 @@ function barStyle() {
         return instanceState.reverse ? 'right' : 'left'
     }
     style[getPositionKey()] = calcOffset()
-    console.log('style',JSON.stringify(style))
     componentInstance.selectComponent('.ty-slider__bar').setStyle(style)
     return style
 }
 function updateValue(value, end) {
-    console.log('updateValue',value)
     if (isRange(value)) {
         value = handleRangeValue(value).map(function (item){
           return  format(item)
@@ -105,7 +98,6 @@ function updateValue(value, end) {
     } else {
         value = format(value)
     }
-    console.log('update:modelValue',value)
     if (!isSameValue(value, instanceState.modelValue)) {
         // emit('update:modelValue', value)
     }
@@ -113,7 +105,6 @@ function updateValue(value, end) {
         // emit('change', value)
     }
     instanceState._updateValue = value
-    instanceState._current = value
     barStyle()
     return value
 }
@@ -141,9 +132,7 @@ module.exports = {
         var total = vertical ? rect.height : rect.width
 
         var value = min + (getDelta() / total) * instanceState.scope
-        console.log('onClickvalue',modelValue)
         if (isRange(modelValue)) {
-            console.log('onClickvalue',modelValue)
             var left = modelValue[0]
             var right = modelValue[1]
             var middle = (left + right) / 2
@@ -192,22 +181,29 @@ module.exports = {
         }
         if (isRange(instanceState._startValue)) {
             var index = instanceState.reverse ? 1 - instanceState.buttonIndex : instanceState.buttonIndex
-            console.log('onTouchmove_currentindex',index)
             instanceState._current[index] = limit(instanceState._startValue[index] + diff)
         } else {
             instanceState._current = limit(instanceState._startValue + diff)
         }
-        console.log('onTouchmove_current',instanceState._current)
         updateValue(instanceState._current)
     },
     onTouchend:function() {
+        console.log('onTouchend',instanceState._dragStatus)
         if (instanceState._dragStatus === 'dragging') {
-            updateValue(instanceState._current, true)
+            console.log('onTouchend',instanceState._current)
+            if (isRange(instanceState._updateValue)) {
+                instanceState._current = handleRangeValue(instanceState._updateValue).map(function (item){
+                    return  format(item)
+                })
+            } else {
+                instanceState._current = format(instanceState._updateValue)
+            }
         }
+        // console.log('onTouchend',instanceState._current)
         instanceState._dragStatus = ''
     },
     onTouchcancel:function() {
-
+        console.log('onTouchcancel',instanceState._dragStatus)
     },
     propObserver: function(newValue, oldValue, ownerInstance, instance) {
         if (!newValue) return
@@ -215,11 +211,13 @@ module.exports = {
         instanceState = ownerInstance.getState()
         instanceState.min = newValue.min
         instanceState.max = newValue.max
-        instanceState.rect = newValue.rect
+        instanceState._current = newValue.value
         instanceState.step = newValue.step
         instanceState.range = newValue.range
         instanceState.scope = newValue.scope
-        instanceState._current = newValue.modelValue
+        instanceState.rect = newValue.rect
+        instanceState.direction = ''
+        instanceState.reverse = newValue.reverse
         updateValue(instanceState._current)
     }
 }
