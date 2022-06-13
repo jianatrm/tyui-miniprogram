@@ -49,14 +49,17 @@ Component({
             vertical: this.properties.vertical,
             reverse: this.properties.reverse,
           }
+        }, () => {
+          console.log('initData', this.data.initData)
         })
       }).exec()
     }
   },
   methods: {
     callback(e) {
+      console.log('callback', e)
       const initData = this.data.initData
-      initData.value = e
+      initData.value = e.value
       this.setData({
         initData
       })

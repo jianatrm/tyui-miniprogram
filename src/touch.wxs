@@ -152,6 +152,8 @@ module.exports = {
         instanceState.range = e.currentTarget.dataset.initData.range
         instanceState.scope = e.currentTarget.dataset.initData.scope
         instanceState.rect = e.currentTarget.dataset.initData.rect
+        instanceState.vertical = e.currentTarget.dataset.initData.vertical
+        instanceState.reverse = e.currentTarget.dataset.initData.reverse
         instanceState.buttonIndex = e.currentTarget.dataset.tabindex
         instanceState._startX = e.touches[0].clientX
         instanceState._startY = e.touches[0].clientY
@@ -189,17 +191,20 @@ module.exports = {
         } else {
             instanceState._current = limit(instanceState._startValue + diff)
         }
+        console.log('_current', instanceState._current)
         updateValue(instanceState._current)
     },
     onTouchend:function() {
+        console.log('onTouchend',instanceState._updateValue)
         if (instanceState._dragStatus === 'dragging') {
             instanceState._current = instanceState._updateValue
-            componentInstance.callMethod('callback',instanceState._updateValue)
+            componentInstance.callMethod('callback',{value:instanceState._updateValue})
         }
         instanceState._dragStatus = ''
     },
     propObserver: function(newValue, oldValue, ownerInstance, instance) {
-        if (!newValue) return
+        console.log('propObserver',JSON.stringify(newValue))
+        if (!newValue || !newValue.step) return
         componentInstance = ownerInstance
         instanceState.min = newValue.min
         instanceState.max = newValue.max
@@ -209,7 +214,8 @@ module.exports = {
         instanceState.scope = newValue.scope
         instanceState.rect = newValue.rect
         instanceState.direction = ''
-        // instanceState.reverse = newValue.reverse
+        instanceState.reverse = newValue.reverse
+        instanceState.vertical = newValue.vertical
         updateValue(instanceState._current)
     }
 }

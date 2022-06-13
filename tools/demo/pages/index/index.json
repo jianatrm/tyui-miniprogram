@@ -1,5 +1,5 @@
 {
   "usingComponents": {
-    "slider": "../../components/slider/index"
+    "ty-slider": "../../components/slider/index"
   }
 }
