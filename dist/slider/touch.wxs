@@ -1,0 +1,236 @@
+var componentInstance = null
+var instanceState = {}
+function isRange(val) {
+    if (!val) return  false
+    return instanceState.range && val.constructor == 'Array'
+}
+
+function clamp (num, min, max) {
+    return Math.min(Math.max(num, min), max)
+}
+
+function limit(num) {
+    return num
+}
+function addNumber(num1, num2) {
+    var cardinal = Math.pow(10,10)
+    return Math.round((num1 + num2) * cardinal) / cardinal
+}
+
+function format(value) {
+    var min = +instanceState.min
+    var max = +instanceState.max
+    var step = +instanceState.step
+    value = clamp(value, min, max)
+    var diff = Math.round((value - min) / step) * step
+    return addNumber(min, diff)
+}
+function getDirection(x, y) {
+    if (x > y) {
+        return 'horizontal'
+    }
+    if (y > x) {
+        return 'vertical'
+    }
+    return ''
+}
+
+function calcMainAxis() {
+    var modelValue = instanceState._updateValue, min = instanceState.min;
+    if (isRange(modelValue)) {
+        return limit(((modelValue[1] - modelValue[0]) * 100) / instanceState.scope) + '%'
+    }
+    return ((modelValue - min) * 100) / instanceState.scope + '%'
+}
+// 计算选中条的开始位置的偏移量
+function calcOffset() {
+    var modelValue = instanceState._updateValue, min = instanceState.min;
+    if (isRange(modelValue)) {
+        return (limit((modelValue[0] - min)) * 100) / instanceState.scope + '%'
+    }
+    return '0%'
+}
+
+
+function isSameValue(newValue, oldValue) {
+    return JSON.stringify(newValue) === JSON.stringify(oldValue)
+}
+function handleRangeValue(value) {
+    // 设置默认值
+    var left = value[0] || instanceState.min
+    var right = value[1] || instanceState.max
+    // 处理两个滑块重叠之后的情况
+    return left > right ? [right, left] : [left, right]
+}
+
+
+function barStyle() {
+    var mainAxis = instanceState.vertical ? 'height' : 'width'
+    var style = {
+        background: instanceState.activeColor,
+    }
+    style[mainAxis] =  calcMainAxis()
+    if (instanceState._dragStatus) {
+        style.transition = 'none'
+    }
+
+    function getPositionKey () {
+        if (instanceState.vertical) {
+            return instanceState.reverse ? 'bottom' : 'top'
+        }
+        return instanceState.reverse ? 'right' : 'left'
+    }
+    style[getPositionKey()] = calcOffset()
+    //
+    componentInstance.selectComponent('.ty-slider__bar').setStyle(style)
+    return style
+}
+function updateValue(value, end) {
+    if (isRange(value)) {
+        value = handleRangeValue(value).map(function (item){
+          return  format(item)
+        })
+    } else {
+        value = format(value)
+    }
+    if (!isSameValue(value, instanceState.modelValue)) {
+        // emit('update:modelValue', value)
+    }
+    if (end && !isSameValue(value, instanceState._startValue)) {
+        // emit('change', value)
+    }
+    instanceState._updateValue = value
+    barStyle()
+    return value
+}
+module.exports = {
+    onClick:function(event,ins) {
+        return
+        componentInstance = ins
+        var initData = event.currentTarget.dataset.initData
+        var min = initData.min
+        var reverse = initData.reverse
+        var vertical = initData.vertical
+        var modelValue = initData.value
+        var rect = initData.rect
+        instanceState.min = initData.min
+        instanceState.max = initData.max
+        instanceState._current = initData.value
+        instanceState.step = initData.step
+        instanceState.range = initData.range
+        instanceState.scope = initData.scope
+        instanceState.rect = initData.rect
+        instanceState.vertical = initData.vertical
+        instanceState.reverse = initData.reverse
+        instanceState.activeColor = initData.activeColor
+        instanceState.inactiveColor = initData.inactiveColor
+        var touch = event.touches[0]
+        function getDelta () {
+            if (vertical) {
+                if (reverse) {
+                    return rect.bottom - touch.clientY
+                }
+                return touch.clientY - rect.top
+            }
+            if (reverse) {
+                return rect.right - touch.clientX
+            }
+            return touch.clientX - rect.left
+        }
+
+        var total = vertical ? rect.height : rect.width
+
+        var value = min + (getDelta() / total) * instanceState.scope
+        if (isRange(modelValue)) {
+            var left = modelValue[0]
+            var right = modelValue[1]
+            var middle = (left + right) / 2
+
+            if (value <= middle) {
+                updateValue([value, right], true)
+            } else {
+                updateValue([left, value], true)
+            }
+        } else {
+            updateValue(value, true)
+        }
+    },
+
+    onTouchStart:function(e,ins) {
+        componentInstance = ins
+        var initData = e.currentTarget.dataset.initData
+        instanceState.min = initData.min
+        instanceState.max = initData.max
+        instanceState._current = initData.value
+        instanceState.step = initData.step
+        instanceState.range = initData.range
+        instanceState.scope = initData.scope
+        instanceState.rect = initData.rect
+        instanceState.vertical = initData.vertical
+        instanceState.reverse = initData.reverse
+        instanceState.activeColor = initData.activeColor
+        instanceState.inactiveColor = initData.inactiveColor
+        instanceState.buttonIndex = e.currentTarget.dataset.tabindex
+        instanceState._startX = e.touches[0].clientX
+        instanceState._startY = e.touches[0].clientY
+        if (isRange(instanceState._current)) {
+            instanceState._startValue = instanceState._current.map(function (item){
+               return  format(item)
+            })
+        } else {
+            instanceState._startValue = format(instanceState._current)
+        }
+        instanceState._dragStatus = 'start'
+    },
+    onTouchmove:function(e) {
+        instanceState._dragStatus = 'dragging'
+        var touch = e.touches[0]
+        var deltaX = (touch.clientX < 0 ? 0 : touch.clientX) - instanceState._startX
+        var deltaY = touch.clientY - instanceState._startY
+        var offsetX = Math.abs(deltaX)
+        var offsetY = Math.abs(deltaY)
+        var LOCK_DIRECTION_DISTANCE = 10
+        if (!instanceState.direction || (offsetX < LOCK_DIRECTION_DISTANCE &&
+            offsetY < LOCK_DIRECTION_DISTANCE)) {
+            instanceState.direction = getDirection(offsetX, offsetY)
+        }
+        var delta = instanceState.vertical ? deltaY : deltaX
+        var total = instanceState.vertical ? instanceState.rect.height : instanceState.rect.width
+
+        var diff = (delta / total) * instanceState.scope
+        if (instanceState.reverse) {
+            diff = -diff
+        }
+        if (isRange(instanceState._startValue)) {
+            var index = instanceState.reverse ? 1 - instanceState.buttonIndex : instanceState.buttonIndex
+            instanceState._current[index] = limit(instanceState._startValue[index] + diff)
+        } else {
+            instanceState._current = limit(instanceState._startValue + diff)
+        }
+        updateValue(instanceState._current)
+    },
+    onTouchend:function() {
+        if (instanceState._dragStatus === 'dragging') {
+            instanceState._current = instanceState._updateValue
+            componentInstance.callMethod('callback',{value:instanceState._updateValue})
+        }
+        instanceState._dragStatus = ''
+    },
+    propObserver: function(newValue, oldValue, ownerInstance, instance) {
+        if (!newValue || !newValue.step) return
+        componentInstance = ownerInstance
+        instanceState.min = newValue.min
+        instanceState.max = newValue.max
+        instanceState._current = newValue.value
+        instanceState.step = newValue.step
+        instanceState.range = newValue.range
+        instanceState.scope = newValue.scope
+        instanceState.rect = newValue.rect
+        instanceState.direction = ''
+        instanceState.reverse = newValue.reverse
+        instanceState.vertical = newValue.vertical
+        instanceState.activeColor = newValue.activeColor
+        instanceState.inactiveColor = newValue.inactiveColor
+        updateValue(instanceState._current)
+    }
+}

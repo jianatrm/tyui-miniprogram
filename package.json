@@ -1,6 +1,6 @@
 {
   "name": "tyui-miniprogram",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "",
   "scripts": {
     "dev": "gulp dev --develop",
@@ -15,9 +15,9 @@
     "lint": "eslint \"src/**/*.js\" --fix",
     "lint-tools": "eslint \"tools/**/*.js\" --rule \"import/no-extraneous-dependencies: false\" --fix"
   },
-  "main": "miniprogram_dist/slider/index.js",
+  "main": "dist/slider/index.js",
   "files": [
-    "miniprogram_dist/",
+    "dist/",
     "README.md",
     "package.json"
   ],
