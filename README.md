@@ -1,6 +1,6 @@
-# miniprogram-custom-component
+# ty-miniprogram
 
-小程序自定义组件开发模板：
+小程序自定义组件：
 
 * 支持使用 less 语法编写 wxss 文件
 * 使用 webpack 构建 js
