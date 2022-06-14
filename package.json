@@ -1,6 +1,6 @@
 {
   "name": "tyui-miniprogram",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "",
   "scripts": {
     "dev": "gulp dev --develop",
@@ -24,7 +24,9 @@
   "keywords": [
     "miniprogram",
     "slider",
-    "range-slider"
+    "range-slider",
+    "小程序滑块",
+    "小程序单向双向滑块"
   ],
   "miniprogram": "miniprogram_dist",
   "jest": {
@@ -38,10 +40,10 @@
       "miniprogram_dist"
     ]
   },
-  "homepage": "https://github.com/webpack/webpack",
+  "homepage": "https://github.com/jianatrm/tyui-miniprogram.git",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/jianatrm/tyui-miniprogram.git"
   },
   "author": "jianatrm",
   "license": "MIT",
