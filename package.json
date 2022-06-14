@@ -38,6 +38,7 @@
       "miniprogram_dist"
     ]
   },
+  "homepage": "https://github.com/webpack/webpack",
   "repository": {
     "type": "git",
     "url": ""
