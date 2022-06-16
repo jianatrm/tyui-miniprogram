@@ -1,6 +1,6 @@
-# ty-miniprogram
+# tyui-miniprogram
 
-小程序组件：slider  单滑块，双滑块， 垂直，以及反向操作
+小程序组件：slider  单滑块，双滑块， 垂直，以及反向操作,自定义滑块slot
 
 
 ## 使用
@@ -19,7 +19,10 @@ npm install tyui-miniprogram
 
 3. wxml文件中引入
 ```
- <ty-slider range="{{false}}"  min="{{0}}" max="{{100}}" value="{{50}}" step="{{1}}" vertical="{{true}}" reverse activeColor="red" inactiveColor="green"></ty-slider>
+ <ty-slider range="{{false}}"  min="{{0}}" max="{{100}}" value="{{50}}" step="{{1}}" vertical="{{true}}" reverse activeColor="red" inactiveColor="green">
+     <view  slot="left">1</view>
+     <view  slot="right">2</view>
+ </ty-slider>
 ```
 | 参数 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
@@ -34,6 +37,7 @@ npm install tyui-miniprogram
 | disabled | 是否禁用滑块 | boolean | false |
 | readonly | 是否为只读状态，只读状态下无法修改滑块的值 | _boolean_ | false |
 | vertical | 是否垂直展示 | boolean | false |
+| slot | 插槽 | wxml |  |
 
 ### Events
 

@@ -53,3 +53,13 @@
   width: 4rpx;
   height: 100%;
 }
+
+.slot-left:empty + .ty-slider__button_left{
+  display: flex;
+}
+.slot-right:empty + .ty-slider__button_right{
+  display: flex;
+}
+.ty-slider__button_left,.ty-slider__button_right{
+  display: none;
+}
