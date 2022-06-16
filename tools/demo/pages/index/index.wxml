@@ -3,7 +3,10 @@
         <ty-slider range="{{false}}"  min="{{0}}" max="{{100}}" value="{{50}}" step="{{1}}" vertical="{{true}}" reverse activeColor="red" inactiveColor="green"></ty-slider>
     </view>
    <view style="height:690rpx;margin-top:100rpx">
-       <ty-slider range="{{true}}"  min="{{0}}" max="{{100}}" value="{{[20,30]}}" step="{{1}}" ></ty-slider>
+       <ty-slider range="{{true}}"  min="{{0}}" max="{{100}}" value="{{[20,30]}}" step="{{1}}" >
+           <view slot="left">1</view>
+           <view slot="right">2</view>
+       </ty-slider>
    </view>
 </view>
 
